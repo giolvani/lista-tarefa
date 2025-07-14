@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tarefas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container pt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Lista de tarefas <span th:if="${filtro}" th:text="'- ' + ${filtro}" class="text-muted fs-5"></span></h1>
+            <div>
+                <a th:href="@{/tasks/create}" class="btn btn-success me-2">Nova Tarefa</a>
+                <a th:href="@{/tasks/em-andamento}" class="btn btn-info me-2">Em Andamento</a>
+                <a th:href="@{/tasks}" class="btn btn-secondary">Todas</a>
+            </div>
+        </div>
+
+        <table class="table table-bordered">
+            <thead class="table">
+                <tr>
+                    <th>Id</th>
+                    <th>Título</th>
+                    <th>Status</th>
+                    <th>Data</th>
+                    <th>Opções</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="t : ${tasksList}">
+                    <td th:text="${t.id}">Id</td>
+                    <td>
+                        <a th:href="@{/tasks/details/{id}(id=${t.id})}" th:text="${t.titulo}"
+                            class="text-decoration-none">Título</a>
+                    </td>
+                    <td>
+                        <span th:text="${t.status.descricao}" th:class="${t.status.name() == 'EM_ANDAMENTO' ? 'badge bg-primary' : 
+                                        (t.status.name() == 'CONCLUIDO' ? 'badge bg-success' : 'badge bg-danger')}">
+                            Status
+                        </span>
+                    </td>
+                    <td th:text="${#temporals.format(t.data, 'dd/MM/yyyy')}">Data</td>
+                    <td>
+                        <a th:href="@{/tasks/edit/{id}(id=${t.id})}" class="btn btn-sm btn-warning me-1">Editar</a>
+                        <a th:href="@{/tasks/remove/{id}(id=${t.id})}" class="btn btn-sm btn-danger"
+                            onclick="return confirm('Tem certeza que deseja excluir esta tarefa?')">Excluir</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${#lists.isEmpty(tasksList)}" class="alert alert-info">
+            <p class="mb-0">Nenhuma tarefa encontrada.</p>
+        </div>
+
+    </div>
+</body>
+</html>
